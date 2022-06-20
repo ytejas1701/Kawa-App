@@ -8,7 +8,9 @@ import 'dart:math';
 import 'package:kawa_app/models/kanji.dart';
 
 class Customer with ChangeNotifier {
-  String userid = FirebaseAuth.instance.currentUser!.uid;
+  String userid = FirebaseAuth.instance.currentUser == null
+      ? ''
+      : FirebaseAuth.instance.currentUser!.uid;
 
   Future<int> upgradeLevel() async {
     CollectionReference user = FirebaseFirestore.instance.collection(userid);
@@ -189,11 +191,6 @@ class Customer with ChangeNotifier {
         .snapshots();
   }
 
-  void logOut() async {
-    await FirebaseAuth.instance.signOut();
-    notifyListeners();
-  }
-
   Future<void> login(String email, String password) async {
     try {
       await FirebaseAuth.instance
@@ -216,10 +213,14 @@ class Customer with ChangeNotifier {
         'email': email,
         'level': 0,
       });
-      upgradeLevel();
       notifyListeners();
     } catch (error) {
       rethrow;
     }
+  }
+
+  void logOut() async {
+    await FirebaseAuth.instance.signOut();
+    notifyListeners();
   }
 }

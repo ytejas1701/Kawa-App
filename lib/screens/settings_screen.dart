@@ -54,7 +54,10 @@ class SettingsScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 20),
               ),
               onTap: () {
-                customer.upgradeLevel();
+                customer.upgradeLevel().then((value) =>
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                            'Congratulations! You are now at level $value.'))));
               },
             ),
             ListTile(

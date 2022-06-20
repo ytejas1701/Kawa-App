@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kawa_app/models/customer.dart';
@@ -28,7 +27,6 @@ class _AuthCard extends StatefulWidget {
 
 class __AuthCardState extends State<_AuthCard> {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  final _auth = FirebaseAuth.instance;
 
   final _passwordController = TextEditingController();
   var _email = '';
@@ -38,7 +36,6 @@ class __AuthCardState extends State<_AuthCard> {
   var _isLoading = false;
 
   void _authenticate() async {
-    var authResult;
     try {
       setState(() {
         _isLoading = true;
@@ -49,20 +46,6 @@ class __AuthCardState extends State<_AuthCard> {
       } else {
         await Provider.of<Customer>(context, listen: false)
             .signup(_email, _password, _username);
-        // authResult = await _auth.createUserWithEmailAndPassword(
-        //     email: _email, password: _password);
-        // String userid = FirebaseAuth.instance.currentUser!.uid;
-
-        // CollectionReference user =
-        //     FirebaseFirestore.instance.collection(userid);
-        // try {
-        //   var stats = await user.doc('statistics').set({
-        //     'username': _username,
-        //     'email': _email,
-        //   });
-        // } catch (error) {
-        //   rethrow;
-        // }
       }
     } on FirebaseAuthException catch (error) {
       setState(() {

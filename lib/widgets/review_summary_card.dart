@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kawa_app/models/kanji.dart';
 
 class ReviewSummaryCard extends StatelessWidget {
-  List<Kanji> kanjiList;
+  final List<Kanji> kanjiList;
   Map<String, int> attemptsData;
 
   ReviewSummaryCard(this.kanjiList, this.attemptsData);

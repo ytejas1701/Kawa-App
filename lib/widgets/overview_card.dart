@@ -36,13 +36,15 @@ class _OverViewCardState extends State<OverViewCard> {
                   widget.title == 'Reviews'
                       ? Navigator.of(context)
                           .push(MaterialPageRoute(
-                              builder: ((context) => ReviewScreen(value))))
+                              builder: ((context) =>
+                                  ReviewScreen(value..shuffle()))))
                           .then((_) {
                           widget._reloadHomeScreen();
                         })
                       : Navigator.of(context)
                           .push(MaterialPageRoute(
-                              builder: ((context) => LessonScreen(value))))
+                              builder: ((context) =>
+                                  LessonScreen(value..shuffle()))))
                           .then((_) {
                           widget._reloadHomeScreen();
                         });
@@ -66,14 +68,6 @@ class _OverViewCardState extends State<OverViewCard> {
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         int len = (snapshot.data as List<dynamic>).length;
-                        if (len == 0 && widget.title != 'Reviews') {
-                          Provider.of<Customer>(context, listen: false)
-                              .upgradeLevel()
-                              .then((value) => ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                      content: Text(
-                                          'Congratulations! You are now at level $value.'))));
-                        }
                         return Text(
                           '$len ',
                           style: TextStyle(

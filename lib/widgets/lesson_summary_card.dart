@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kawa_app/models/kanji.dart';
 
 class LessonSummaryCard extends StatelessWidget {
-  List<Kanji> kanjiList;
+  final List<Kanji> kanjiList;
   LessonSummaryCard(this.kanjiList);
   @override
   Widget build(BuildContext context) {
