@@ -21,16 +21,36 @@ class Customer with ChangeNotifier {
           'https://kanji-database-b3cee-default-rtdb.firebaseio.com/kanji-level-${newLevel.toString()}.json');
       final response = await http.get(url);
 
-      var kanjiData = json.decode(response.body) as Map<String, dynamic>;
+      var kanjiData = json.decode(response.body) as Map<String, Object>;
       kanjiData.forEach((key, value) async {
         await user.doc(key).set({
           'level': newLevel,
           'stage': 0,
+          'ispromoted': false,
+          'kanji': (value as Map<String, dynamic>)['kanji']
         });
       });
-      user.doc('statistics').update({'level': newLevel});
+      user.doc('statistics').update({
+        'level': newLevel,
+        'promotionsLeft': kanjiData.length,
+      });
       notifyListeners();
       return newLevel;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<int> checkForUpgrade() async {
+    CollectionReference user = FirebaseFirestore.instance.collection(userid);
+    try {
+      var stats = await user.doc('statistics').get();
+      int promotionsLeft = stats.get('promotionsLeft') as int;
+      int currentLevel = stats.get('level') as int;
+      if (promotionsLeft == 0) {
+        return currentLevel + 1;
+      }
+      return 0;
     } catch (error) {
       rethrow;
     }
@@ -65,17 +85,17 @@ class Customer with ChangeNotifier {
 
     CollectionReference user = FirebaseFirestore.instance.collection(userid);
     try {
-      var queryData = await user
-          .where('nextReview', isLessThanOrEqualTo: start)
-          .limit(24)
-          .get();
+      var queryData =
+          await user.where('nextReview', isLessThanOrEqualTo: start).get();
       for (var element in queryData.docs) {
         var data = element.data() as Map<String, dynamic>;
         kanjiIds.add({
           'id': element.id,
           'level': data['level'],
           'stage': data['stage'],
-          'nextReview': data['nextReview']
+          'nextReview': data['nextReview'],
+          'isPromoted': data['isPromoted'],
+          'kanji': data['kanji']
         });
       }
       return kanjiIds;
@@ -113,7 +133,12 @@ class Customer with ChangeNotifier {
     }
   }
 
-  void updateReviewKanji(String kanjiId, int attempts, int curStage) async {
+  void updateReviewKanji(
+      {required String kanjiId,
+      required int attempts,
+      required int curStage,
+      required bool isPromoted,
+      required String kanji}) async {
     CollectionReference user = FirebaseFirestore.instance.collection(userid);
     int newStage;
     if (attempts == 0) {
@@ -161,6 +186,9 @@ class Customer with ChangeNotifier {
       'stage': newStage,
       'nextReview': newNextReview,
     });
+    if (newStage == 5 && !isPromoted) {
+      promoteKanji(kanjiId, kanji);
+    }
   }
 
   void updateLessonKanji(String kanjiId) async {
@@ -172,6 +200,25 @@ class Customer with ChangeNotifier {
       'nextReview':
           Timestamp.fromMicrosecondsSinceEpoch(curTime.microsecondsSinceEpoch),
     });
+  }
+
+  void promoteKanji(String kanjiId, String kanji) async {
+    CollectionReference user = FirebaseFirestore.instance.collection(userid);
+    await user.doc(kanjiId).update({
+      'isPromoted': true,
+    });
+    var stats = await user.doc('statistics').get();
+    int promotionsLeft = min(0, (stats.get('promotionsLeft') as int) - 1);
+    await user.doc('statistics').update({'promotionsLeft': promotionsLeft});
+    var vocabs = await user.where(kanji, isEqualTo: false).get();
+    var writeBatch = FirebaseFirestore.instance.batch();
+    for (var vocab in vocabs.docs) {
+      writeBatch.update(user.doc(vocab.id), {
+        'stage': FieldValue.increment(1),
+        kanji: true,
+      });
+    }
+    writeBatch.commit();
   }
 
   Future<String> getUsername() async {
@@ -212,7 +259,9 @@ class Customer with ChangeNotifier {
         'username': username,
         'email': email,
         'level': 0,
+        'promotionsLeft': -1,
       });
+      await upgradeLevel();
       notifyListeners();
     } catch (error) {
       rethrow;

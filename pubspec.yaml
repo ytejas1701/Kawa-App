@@ -45,6 +45,7 @@ dependencies:
   equatable: ^2.0.3
   percent_indicator: ^4.2.2
   async: ^2.8.2
+  confetti: ^0.7.0
   
 
 dev_dependencies:

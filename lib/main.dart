@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => Customer(),
+        create: (_) => Customer(),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(

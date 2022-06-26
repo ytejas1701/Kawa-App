@@ -38,10 +38,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
     bool isReadingCorrect = reviewData.isReadingCorrect;
     if (isMeaningCorrect && isReadingCorrect) {
       Provider.of<Customer>(context, listen: false).updateReviewKanji(
-        kanjiId,
-        (attemptsData[kanjiId]) ?? 0,
-        widget.reviewKanjisData[_currIndex]['stage'],
-      );
+          kanjiId: kanjiId,
+          attempts: (attemptsData[kanjiId]) ?? 0,
+          curStage: widget.reviewKanjisData[_currIndex]['stage'],
+          isPromoted: widget.reviewKanjisData[_currIndex]['isPromoted'],
+          kanji: widget.reviewKanjisData[_currIndex]['kanji']);
       reviewData.increaseCorrectResponses();
     } else {
       wrongList.add(kanjiList[_currIndex]);
