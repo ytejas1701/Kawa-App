@@ -8,8 +8,8 @@ I used Firebase as the backend for this app. For collecting the Kanji data, I sc
 
 ## Gallery
 <p>
-  <img src="https://user-images.githubusercontent.com/97452093/195892454-7d666e61-7fee-47ce-a536-3565dcd1306d.jpg" width="200" />
-  <img src="https://user-images.githubusercontent.com/97452093/195892460-ff8460ac-da1b-42d5-a90f-3a538ba31ad3.jpg" width="200" /> 
-  <img src="https://user-images.githubusercontent.com/97452093/195892466-e443ee1a-0d39-4bca-984f-61555b5a8161.jpg" width="200" /> 
-  <img src="https://user-images.githubusercontent.com/97452093/195892475-dc0ec9ac-91f3-444a-8c42-f68b10eb34c2.jpg" width="200" /> 
+  <img src="./screenshots/home.jpg" width="200" />
+  <img src="./screenshots/lesson.jpg" width="200" /> 
+  <img src="./screenshots/review-back.jpg" width="200" /> 
+  <img src="./screenshots/auth.jpg" width="200" /> 
 </p>
