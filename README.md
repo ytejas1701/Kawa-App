@@ -14,7 +14,7 @@ I used Firebase as the backend for this app. For collecting the Kanji data, I sc
   - [x] ~~Level Progress~~
   - [x] ~~Confetti Animation~~
   - [ ] Show user progress through graphs
-  - [ ] Integrate Vocabulary along with Kanji
+  - [ ] Integrate Radicals and Vocabulary
   - [ ] Detailed view of any Kanji
   - [ ] Forget a Kanji
   
